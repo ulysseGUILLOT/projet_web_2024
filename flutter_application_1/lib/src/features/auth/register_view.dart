@@ -1,15 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/src/features/auth/register_view.dart';
 import '../../services/auth_service.dart';
 
-class LoginView extends StatefulWidget {
-  const LoginView({super.key});
+class RegisterView extends StatefulWidget {
+  const RegisterView({super.key});
+
+  static const routeName = '/register'; // Add route name
 
   @override
-  State<LoginView> createState() => _LoginViewState();
+  State<RegisterView> createState() => _RegisterViewState();
 }
 
-class _LoginViewState extends State<LoginView> {
+class _RegisterViewState extends State<RegisterView> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   final _authService = AuthService();
@@ -25,7 +26,7 @@ class _LoginViewState extends State<LoginView> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Login'),
+        title: const Text('Register'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -52,25 +53,19 @@ class _LoginViewState extends State<LoginView> {
             ElevatedButton(
               onPressed: () async {
                 try {
-                  await _authService.signInWithEmailAndPassword(
-                    _emailController.text,
-                    _passwordController.text,
+                  await _authService.registerWithEmailAndPassword(
+                    _emailController.text.trim(),
+                    _passwordController.text.trim(),
                   );
-                  // Successful sign-in; no need to navigate manually
+                  if (!mounted) return;
+                  Navigator.pushReplacementNamed(context, '/');
                 } catch (e) {
-                  if (!context.mounted) return;
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(content: Text(e.toString())),
                   );
                 }
               },
-              child: const Text('Login'),
-            ),
-            TextButton(
-              onPressed: () {
-                Navigator.pushNamed(context, RegisterView.routeName);
-              },
-              child: const Text('Create an account'),
+              child: const Text('Register'),
             ),
           ],
         ),

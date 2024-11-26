@@ -15,6 +15,12 @@ class SampleItemListView extends StatefulWidget {
 
 class _SampleItemListViewState extends State<SampleItemListView> {
   DateTime selectedDate = DateTime.now();
+  String selectedUser = '';
+
+  // Add this method to fetch users
+  Stream<QuerySnapshot> getUsers() {
+    return FirebaseFirestore.instance.collection('users').snapshots();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -114,6 +120,17 @@ class _SampleItemListViewState extends State<SampleItemListView> {
                   subtitle: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
+                      Text(todo.text),
+                      const SizedBox(height: 4),
+                      if (todo.assignedTo != null)
+                        Text(
+                          'Assigned to: ${todo.assignedTo}',
+                          style: TextStyle(
+                            color: Colors.grey[600],
+                            fontSize: 12,
+                            fontStyle: FontStyle.italic,
+                          ),
+                        ),
                       Text(
                         'Due: ${DateFormat('dd MMM yyyy HH:mm').format(todo.dueDate)}',
                         style: TextStyle(
@@ -121,10 +138,6 @@ class _SampleItemListViewState extends State<SampleItemListView> {
                               ? Colors.red
                               : Colors.grey[600],
                         ),
-                      ),
-                      Text(
-                        'Added: ${DateFormat('dd MMM yyyy').format(todo.dateAdded)}',
-                        style: TextStyle(color: Colors.grey[600], fontSize: 12),
                       ),
                     ],
                   ),
@@ -235,6 +248,7 @@ class _SampleItemListViewState extends State<SampleItemListView> {
               String newTitle = '';
               String newText = '';
               DateTime selectedDate = DateTime.now();
+              String assignedTo = '';
 
               return Container(
                 padding: const EdgeInsets.all(16),
@@ -258,6 +272,44 @@ class _SampleItemListViewState extends State<SampleItemListView> {
                       onChanged: (value) => newText = value,
                     ),
                     const SizedBox(height: 16),
+                    // Add user selection dropdown
+                    StreamBuilder<QuerySnapshot>(
+                      stream: getUsers(),
+                      builder: (context, snapshot) {
+                        if (!snapshot.hasData) {
+                          return const CircularProgressIndicator();
+                        }
+
+                        return StreamBuilder<QuerySnapshot>(
+                          stream: getUsers(),
+                          builder: (context, snapshot) {
+                            if (!snapshot.hasData) {
+                              return const CircularProgressIndicator();
+                            } else {
+                              List<DropdownMenuItem<String>> userItems =
+                                  snapshot.data!.docs.map((doc) {
+                                String email = doc['email'];
+                                return DropdownMenuItem(
+                                  value: email,
+                                  child: Text(email),
+                                );
+                              }).toList();
+
+                              return DropdownButtonFormField<String>(
+                                decoration: const InputDecoration(
+                                  labelText: 'Assign to',
+                                ),
+                                value: assignedTo.isEmpty ? null : assignedTo,
+                                items: userItems,
+                                onChanged: (value) {
+                                  assignedTo = value ?? '';
+                                },
+                              );
+                            }
+                          },
+                        );
+                      },
+                    ),
                     ListTile(
                       title: const Text('Due Date'),
                       subtitle: Text(
@@ -312,6 +364,9 @@ class _SampleItemListViewState extends State<SampleItemListView> {
                                 'completed': false,
                                 'dateAdded': Timestamp.now(),
                                 'dueDate': Timestamp.fromDate(selectedDate),
+                                'assignedTo': assignedTo,
+                                'createdBy':
+                                    FirebaseAuth.instance.currentUser?.email,
                               });
                               Navigator.pop(context);
                             }
