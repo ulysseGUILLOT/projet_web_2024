@@ -7,6 +7,8 @@ import '../models/todo.dart';
 class SampleItemListView extends StatefulWidget {
   const SampleItemListView({super.key});
 
+  static const routeName = '/';
+
   @override
   State<SampleItemListView> createState() => _SampleItemListViewState();
 }
