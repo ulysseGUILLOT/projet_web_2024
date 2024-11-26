@@ -30,3 +30,12 @@
     display: flex;
     align-items: center;
   }
+
+  .modal-body {
+    max-height: 400px;
+    overflow-y: auto;
+  }
+  
+  .text-wrap {
+    word-wrap: break-word;
+  }

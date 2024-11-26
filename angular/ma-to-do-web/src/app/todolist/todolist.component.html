@@ -7,16 +7,16 @@
             <h6 class="mb-3">Des choses à faire</h6>
             <form (submit)="addTodo()" class="d-flex justify-content-center align-items-center mb-4">
               <div data-mdb-input-init class="form-outline flex-fill">
-                <input type="text" id="form3" class="form-control form-control-lg" [(ngModel)]="newTodo" name="newTodo" />
+                <input type="text" id="form3" class="form-control form-control-lg" [(ngModel)]="newTodo" name="newTodo" required />
                 <label class="form-label" for="form3">Qu'est ce qu'on fait chef ?</label>
               </div>
               <div data-mdb-input-init class="form-outline flex-fill ms-2">
-                <input type="text" id="form4" class="form-control form-control-lg" [(ngModel)]="newText" name="newText" />
-                <label class="form-label" for="form4">Description</label>
+                <input type="date" id="dueDate" class="form-control form-control-lg" [(ngModel)]="newDueDate" name="newDueDate" [min]="minDate" required />
+                <label class="form-label" for="dueDate">Date de fin</label>
               </div>
               <div data-mdb-input-init class="form-outline flex-fill ms-2">
-                <input type="date" id="dueDate" class="form-control form-control-lg" [(ngModel)]="newDueDate" name="newDueDate" [min]="minDate" />
-                <label class="form-label" for="dueDate">Date de fin</label>
+                <textarea id="form4" class="form-control form-control-lg" [(ngModel)]="newText" name="newText" rows="3" required></textarea>
+                <label class="form-label" for="form4">Description</label>
               </div>
               <button type="submit" data-mdb-button-init data-mdb-ripple-init class="btn btn-primary btn-lg ms-2">Add</button>
             </form>
@@ -36,8 +36,8 @@
                       <div *ngIf="!todo.editing">{{ todo.title }}</div>
                       <input *ngIf="todo.editing" [(ngModel)]="todo.title" class="form-control" />
                       <small class="text-muted">Ajouté le: {{ todo.dateAdded?.toDate() | date:'short' }}</small>
-                      <div>{{ todo.text }}</div>
                     </div>
+                    <button class="btn btn-link p-0" (click)="openDescriptionModal(todo)">Description</button>
                   </td>
                   <td class="status">
                     {{ todo.completed ? 'Fini' : 'En cours' }}
@@ -72,3 +72,21 @@
     </div>
   </div>
 </section>
+
+<!-- Modal -->
+<div class="modal fade" id="descriptionModal" tabindex="-1" aria-labelledby="descriptionModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="descriptionModalLabel">Description</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body overflow-auto">
+        <p class="text-wrap">{{ selectedTodo?.text }}</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+      </div>
+    </div>
+  </div>
+</div>

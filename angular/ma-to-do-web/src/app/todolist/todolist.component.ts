@@ -3,6 +3,7 @@ import { Firestore, collectionData, collection, addDoc, deleteDoc, doc, updateDo
 import { Observable } from 'rxjs';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import * as bootstrap from 'bootstrap';
 
 @Component({
   selector: 'app-todolist',
@@ -17,6 +18,7 @@ export class TodolistComponent implements OnInit {
   newText: string = '';
   newDueDate: string = '';
   minDate: string = '';
+  selectedTodo: any = null;
 
   constructor(private firestore: Firestore) {
     const todosCollection = collection(this.firestore, 'todos');
@@ -33,6 +35,12 @@ export class TodolistComponent implements OnInit {
     const month = (today.getMonth() + 1).toString().padStart(2, '0');
     const day = today.getDate().toString().padStart(2, '0');
     this.minDate = `${year}-${month}-${day}`;
+  }
+
+  openDescriptionModal(todo: any) {
+    this.selectedTodo = todo;
+    const descriptionModal = new bootstrap.Modal(document.getElementById('descriptionModal')!);
+    descriptionModal.show();
   }
 
   addTodo() {
