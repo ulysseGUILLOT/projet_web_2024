@@ -17,13 +17,15 @@ class _SampleItemListViewState extends State<SampleItemListView> {
   DateTime selectedDate = DateTime.now();
   String selectedUser = '';
 
-  // Add this method to fetch users
+  // Method to fetch users
   Stream<QuerySnapshot> getUsers() {
     return FirebaseFirestore.instance.collection('users').snapshots();
   }
 
   @override
   Widget build(BuildContext context) {
+    final currentUserEmail = FirebaseAuth.instance.currentUser?.email ?? '';
+
     return Scaffold(
       appBar: AppBar(
         title: Column(
@@ -31,7 +33,7 @@ class _SampleItemListViewState extends State<SampleItemListView> {
           children: [
             const Text('Todo List'),
             Text(
-              FirebaseAuth.instance.currentUser?.email ?? '',
+              currentUserEmail,
               style: TextStyle(
                 fontSize: 12,
                 color: Theme.of(context).colorScheme.onPrimary.withOpacity(0.8),
@@ -55,7 +57,10 @@ class _SampleItemListViewState extends State<SampleItemListView> {
         ],
       ),
       body: StreamBuilder<QuerySnapshot>(
-        stream: FirebaseFirestore.instance.collection('todos').snapshots(),
+        stream: FirebaseFirestore.instance
+            .collection('todos')
+            .where('participants', arrayContains: currentUserEmail)
+            .snapshots(),
         builder: (context, snapshot) {
           if (snapshot.hasError) {
             return const Center(child: Text('Something went wrong'));
@@ -120,9 +125,8 @@ class _SampleItemListViewState extends State<SampleItemListView> {
                   subtitle: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(todo.text),
-                      const SizedBox(height: 4),
-                      if (todo.assignedTo != null)
+                      if (todo.assignedTo != null &&
+                          todo.assignedTo!.isNotEmpty)
                         Text(
                           'Assigned to: ${todo.assignedTo}',
                           style: TextStyle(
@@ -252,130 +256,128 @@ class _SampleItemListViewState extends State<SampleItemListView> {
 
               return Container(
                 padding: const EdgeInsets.all(16),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    TextField(
-                      autofocus: true,
-                      decoration: const InputDecoration(
-                        labelText: 'Todo Title',
-                        hintText: 'Enter your todo title',
+                child: SingleChildScrollView(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      TextField(
+                        autofocus: true,
+                        decoration: const InputDecoration(
+                          labelText: 'Todo Title',
+                          hintText: 'Enter your todo title',
+                        ),
+                        onChanged: (value) => newTitle = value,
                       ),
-                      onChanged: (value) => newTitle = value,
-                    ),
-                    const SizedBox(height: 8),
-                    TextField(
-                      decoration: const InputDecoration(
-                        labelText: 'Todo Description',
-                        hintText: 'Enter your todo description',
+                      const SizedBox(height: 8),
+                      TextField(
+                        decoration: const InputDecoration(
+                          labelText: 'Todo Description',
+                          hintText: 'Enter your todo description',
+                        ),
+                        onChanged: (value) => newText = value,
                       ),
-                      onChanged: (value) => newText = value,
-                    ),
-                    const SizedBox(height: 16),
-                    // Add user selection dropdown
-                    StreamBuilder<QuerySnapshot>(
-                      stream: getUsers(),
-                      builder: (context, snapshot) {
-                        if (!snapshot.hasData) {
-                          return const CircularProgressIndicator();
-                        }
-
-                        return StreamBuilder<QuerySnapshot>(
-                          stream: getUsers(),
-                          builder: (context, snapshot) {
-                            if (!snapshot.hasData) {
-                              return const CircularProgressIndicator();
-                            } else {
-                              List<DropdownMenuItem<String>> userItems =
-                                  snapshot.data!.docs.map((doc) {
-                                String email = doc['email'];
-                                return DropdownMenuItem(
-                                  value: email,
-                                  child: Text(email),
-                                );
-                              }).toList();
-
-                              return DropdownButtonFormField<String>(
-                                decoration: const InputDecoration(
-                                  labelText: 'Assign to',
-                                ),
-                                value: assignedTo.isEmpty ? null : assignedTo,
-                                items: userItems,
-                                onChanged: (value) {
-                                  assignedTo = value ?? '';
-                                },
+                      const SizedBox(height: 16),
+                      // User selection dropdown
+                      StreamBuilder<QuerySnapshot>(
+                        stream: getUsers(),
+                        builder: (context, snapshot) {
+                          if (!snapshot.hasData) {
+                            return const CircularProgressIndicator();
+                          } else {
+                            List<DropdownMenuItem<String>> userItems =
+                                snapshot.data!.docs.map((doc) {
+                              String email = doc['email'];
+                              return DropdownMenuItem(
+                                value: email,
+                                child: Text(email),
                               );
-                            }
-                          },
-                        );
-                      },
-                    ),
-                    ListTile(
-                      title: const Text('Due Date'),
-                      subtitle: Text(
-                          DateFormat('dd/MM/yyyy HH:mm').format(selectedDate)),
-                      trailing: IconButton(
-                        icon: const Icon(Icons.calendar_today),
-                        onPressed: () async {
-                          final DateTime? date = await showDatePicker(
-                            context: context,
-                            initialDate: selectedDate,
-                            firstDate: DateTime.now(),
-                            lastDate: DateTime(2025),
-                          );
+                            }).toList();
 
-                          if (date != null && context.mounted) {
-                            final TimeOfDay? time = await showTimePicker(
-                              context: context,
-                              initialTime: TimeOfDay.now(),
+                            return DropdownButtonFormField<String>(
+                              decoration: const InputDecoration(
+                                labelText: 'Assign to',
+                              ),
+                              value: assignedTo.isEmpty ? null : assignedTo,
+                              items: userItems,
+                              onChanged: (value) {
+                                assignedTo = value ?? '';
+                              },
                             );
-
-                            if (time != null && context.mounted) {
-                              setState(() {
-                                selectedDate = DateTime(
-                                  date.year,
-                                  date.month,
-                                  date.day,
-                                  time.hour,
-                                  time.minute,
-                                );
-                              });
-                            }
                           }
                         },
                       ),
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        TextButton(
-                          onPressed: () => Navigator.pop(context),
-                          child: const Text('Cancel'),
-                        ),
-                        const SizedBox(width: 8),
-                        ElevatedButton(
-                          onPressed: () {
-                            if (newTitle.isNotEmpty) {
-                              FirebaseFirestore.instance
-                                  .collection('todos')
-                                  .add({
-                                'title': newTitle,
-                                'text': newText,
-                                'completed': false,
-                                'dateAdded': Timestamp.now(),
-                                'dueDate': Timestamp.fromDate(selectedDate),
-                                'assignedTo': assignedTo,
-                                'createdBy':
-                                    FirebaseAuth.instance.currentUser?.email,
-                              });
-                              Navigator.pop(context);
+                      ListTile(
+                        title: const Text('Due Date'),
+                        subtitle: Text(DateFormat('dd/MM/yyyy HH:mm')
+                            .format(selectedDate)),
+                        trailing: IconButton(
+                          icon: const Icon(Icons.calendar_today),
+                          onPressed: () async {
+                            final DateTime? date = await showDatePicker(
+                              context: context,
+                              initialDate: selectedDate,
+                              firstDate: DateTime.now(),
+                              lastDate: DateTime(2025),
+                            );
+
+                            if (date != null) {
+                              final TimeOfDay? time = await showTimePicker(
+                                context: context,
+                                initialTime: TimeOfDay.now(),
+                              );
+
+                              if (time != null) {
+                                setState(() {
+                                  selectedDate = DateTime(
+                                    date.year,
+                                    date.month,
+                                    date.day,
+                                    time.hour,
+                                    time.minute,
+                                  );
+                                });
+                              }
                             }
                           },
-                          child: const Text('Add Todo'),
                         ),
-                      ],
-                    ),
-                  ],
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          TextButton(
+                            onPressed: () => Navigator.pop(context),
+                            child: const Text('Cancel'),
+                          ),
+                          const SizedBox(width: 8),
+                          ElevatedButton(
+                            onPressed: () {
+                              if (newTitle.isNotEmpty) {
+                                List<String> participants = [currentUserEmail];
+                                if (assignedTo.isNotEmpty &&
+                                    assignedTo != currentUserEmail) {
+                                  participants.add(assignedTo);
+                                }
+                                FirebaseFirestore.instance
+                                    .collection('todos')
+                                    .add({
+                                  'title': newTitle,
+                                  'text': newText,
+                                  'completed': false,
+                                  'dateAdded': Timestamp.now(),
+                                  'dueDate': Timestamp.fromDate(selectedDate),
+                                  'assignedTo': assignedTo,
+                                  'createdBy': currentUserEmail,
+                                  'participants': participants,
+                                });
+                                Navigator.pop(context);
+                              }
+                            },
+                            child: const Text('Add Todo'),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
               );
             },
