@@ -2,18 +2,19 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import '../models/todo.dart';
 
-class SampleItemListView extends StatefulWidget {
-  const SampleItemListView({super.key});
+import '../../models/todo.dart';
+
+class TodoListView extends StatefulWidget {
+  const TodoListView({super.key});
 
   static const routeName = '/';
 
   @override
-  State<SampleItemListView> createState() => _SampleItemListViewState();
+  State<TodoListView> createState() => _SampleItemListViewState();
 }
 
-class _SampleItemListViewState extends State<SampleItemListView> {
+class _SampleItemListViewState extends State<TodoListView> {
   DateTime selectedDate = DateTime.now();
   String selectedUser = '';
 
