@@ -8,6 +8,8 @@ class Todo {
   final DateTime dateAdded;
   final DateTime dueDate;
   final String? assignedTo;
+  final List<String>? participants;
+  final String createdBy;
 
   Todo({
     required this.id,
@@ -17,6 +19,8 @@ class Todo {
     required this.dateAdded,
     required this.dueDate,
     this.assignedTo,
+    this.participants,
+    required this.createdBy,
   });
 
   factory Todo.fromFirestore(Map<String, dynamic> data, String id) {
@@ -28,6 +32,8 @@ class Todo {
       dateAdded: (data['dateAdded'] as Timestamp).toDate(),
       dueDate: (data['dueDate'] as Timestamp).toDate(),
       assignedTo: data['assignedTo'],
+      participants: List<String>.from(data['participants'] ?? []),
+      createdBy: data['createdBy'] ?? '',
     );
   }
 }
