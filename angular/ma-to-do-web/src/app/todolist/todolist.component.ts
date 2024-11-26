@@ -1,26 +1,35 @@
-import { Component } from '@angular/core';
-import { AngularFirestore } from '@angular/fire/compat/firestore';
+import { Component, OnInit } from '@angular/core';
+import { Firestore, collectionData, collection, addDoc, deleteDoc, doc } from '@angular/fire/firestore';
+import { Observable } from 'rxjs';
+import { FormsModule } from '@angular/forms';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-todolist',
+  standalone: true,
+  imports: [FormsModule, CommonModule],
   templateUrl: './todolist.component.html',
-  styleUrls: ['./todolist.component.scss']
+  styleUrl: './todolist.component.scss'
 })
-export class TodolistComponent {
+export class TodolistComponent implements OnInit {
+  todos$: Observable<any[]>;
   newTodo: string = '';
 
-  constructor(private firestore: AngularFirestore) {}
+  constructor(private firestore: Firestore) {
+    const todosCollection = collection(this.firestore, 'todos');
+    this.todos$ = collectionData(todosCollection, { idField: 'id' });
+  }
+
+  ngOnInit(): void {}
 
   addTodo() {
-    if (this.newTodo.trim()) {
-      this.firestore.collection('todos').add({ task: this.newTodo, completed: false })
-        .then(() => {
-          console.log('Todo added successfully');
-          this.newTodo = '';
-        })
-        .catch(error => {
-          console.error('Error adding todo: ', error);
-        });
-    }
+    const todosCollection = collection(this.firestore, 'todos');
+    addDoc(todosCollection, { text: this.newTodo });
+    this.newTodo = '';
+  }
+
+  deleteTodo(id: string) {
+    const todoDoc = doc(this.firestore, `todos/${id}`);
+    deleteDoc(todoDoc);
   }
 }
