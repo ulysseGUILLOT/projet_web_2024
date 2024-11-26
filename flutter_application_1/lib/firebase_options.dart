@@ -41,7 +41,7 @@ class DefaultFirebaseOptions {
     }
   }
 
-  static FirebaseOptions web = FirebaseOptions(
+  static final FirebaseOptions web = FirebaseOptions(
     apiKey: dotenv.env['FIREBASE_WEB_API_KEY'] ?? '',
     appId: '1:398506827783:web:2cfddeba315d49f435caa2',
     messagingSenderId: '398506827783',
@@ -50,7 +50,7 @@ class DefaultFirebaseOptions {
     storageBucket: 'angular-flutter-cloud.firebasestorage.app',
   );
 
-  static FirebaseOptions android = FirebaseOptions(
+  static final FirebaseOptions android = FirebaseOptions(
     apiKey: dotenv.env['FIREBASE_ANDROID_API_KEY'] ?? '',
     appId: '1:398506827783:android:fe4b03547d1b4c0135caa2',
     messagingSenderId: '398506827783',
@@ -58,7 +58,7 @@ class DefaultFirebaseOptions {
     storageBucket: 'angular-flutter-cloud.firebasestorage.app',
   );
 
-  static FirebaseOptions ios = FirebaseOptions(
+  static final FirebaseOptions ios = FirebaseOptions(
     apiKey: dotenv.env['FIREBASE_IOS_API_KEY'] ?? '',
     appId: '1:398506827783:ios:d235cc2e9501418c35caa2',
     messagingSenderId: '398506827783',
@@ -67,7 +67,7 @@ class DefaultFirebaseOptions {
     iosBundleId: 'com.example.flutterApplication1',
   );
 
-  static FirebaseOptions macos = FirebaseOptions(
+  static final FirebaseOptions macos = FirebaseOptions(
     apiKey: dotenv.env['FIREBASE_MACOS_API_KEY'] ?? '',
     appId: '1:398506827783:ios:d235cc2e9501418c35caa2',
     messagingSenderId: '398506827783',
@@ -76,7 +76,7 @@ class DefaultFirebaseOptions {
     iosBundleId: 'com.example.flutterApplication1',
   );
 
-  static FirebaseOptions windows = FirebaseOptions(
+  static final FirebaseOptions windows = FirebaseOptions(
     apiKey: dotenv.env['FIREBASE_WINDOWS_API_KEY'] ?? '',
     appId: '1:398506827783:web:dbb9cfcf5517987735caa2',
     messagingSenderId: '398506827783',
