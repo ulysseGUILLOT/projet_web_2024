@@ -1,26 +1,74 @@
 <section class="vh-100" style="background-color: #e2d5de;">
-    <div class="container py-5 h-100">
-      <div class="row d-flex justify-content-center align-items-center h-100">
-        <div class="col col-xl-10">
-          <div class="card" style="border-radius: 15px;">
-            <div class="card-body p-5">
-              <h6 class="mb-3">Awesome Todo List</h6>
-              <form (submit)="addTodo()" class="d-flex justify-content-center align-items-center mb-4">
-                <div data-mdb-input-init class="form-outline flex-fill">
-                  <input type="text" id="form3" class="form-control form-control-lg" [(ngModel)]="newTodo" name="newTodo" />
-                  <label class="form-label" for="form3">What do you need to do today?</label>
-                </div>
-                <button type="submit" data-mdb-button-init data-mdb-ripple-init class="btn btn-primary btn-lg ms-2">Add</button>
-              </form>
-              <ul class="list-group mb-0">
-                <li *ngFor="let todo of todos$ | async" class="list-group-item d-flex justify-content-between align-items-center">
-                  {{ todo.text }}
-                  <button (click)="deleteTodo(todo.id)" class="btn btn-danger btn-sm">Delete</button>
-                </li>
-              </ul>
-            </div>
+  <div class="container py-5 h-100">
+    <div class="row d-flex justify-content-center align-items-center h-100">
+      <div class="col col-xl-10">
+        <div class="card" style="border-radius: 15px;">
+          <div class="card-body p-5">
+            <h6 class="mb-3">Des choses à faire</h6>
+            <form (submit)="addTodo()" class="d-flex justify-content-center align-items-center mb-4">
+              <div data-mdb-input-init class="form-outline flex-fill">
+                <input type="text" id="form3" class="form-control form-control-lg" [(ngModel)]="newTodo" name="newTodo" />
+                <label class="form-label" for="form3">Qu'est ce qu'on fait chef ?</label>
+              </div>
+              <div data-mdb-input-init class="form-outline flex-fill ms-2">
+                <input type="text" id="form4" class="form-control form-control-lg" [(ngModel)]="newText" name="newText" />
+                <label class="form-label" for="form4">Description</label>
+              </div>
+              <div data-mdb-input-init class="form-outline flex-fill ms-2">
+                <input type="date" id="dueDate" class="form-control form-control-lg" [(ngModel)]="newDueDate" name="newDueDate" [min]="minDate" />
+                <label class="form-label" for="dueDate">Date de fin</label>
+              </div>
+              <button type="submit" data-mdb-button-init data-mdb-ripple-init class="btn btn-primary btn-lg ms-2">Add</button>
+            </form>
+            <table class="table">
+              <thead>
+                <tr>
+                  <th scope="col">Todo Item</th>
+                  <th scope="col">Status</th>
+                  <th scope="col">Due Date</th>
+                  <th scope="col">Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let todo of todos$ | async">
+                  <td class="todo-item">
+                    <div [ngClass]="{'text-decoration-line-through': todo.completed}">
+                      <div *ngIf="!todo.editing">{{ todo.title }}</div>
+                      <input *ngIf="todo.editing" [(ngModel)]="todo.title" class="form-control" />
+                      <small class="text-muted">Ajouté le: {{ todo.dateAdded?.toDate() | date:'short' }}</small>
+                      <div>{{ todo.text }}</div>
+                    </div>
+                  </td>
+                  <td class="status">
+                    {{ todo.completed ? 'Fini' : 'En cours' }}
+                  </td>
+                  <td class="due-date">
+                    <div class="d-flex align-items-center">
+                      {{ todo.dueDate?.toDate() | date:'dd/MM/yyyy' }}
+                      <i *ngIf="isDueSoon(todo.dueDate?.toDate())" class="fas fa-exclamation-triangle text-warning ms-2"></i>
+                      <i *ngIf="isDueDatePassed(todo.dueDate?.toDate())" class="fas fa-exclamation-triangle text-danger ms-2"></i>
+                    </div>
+                  </td>
+                  <td class="action">
+                    <button (click)="toggleTodoStatus(todo)" class="btn btn-secondary btn-sm">
+                      <i class="fas" [ngClass]="todo.completed ? 'fa-undo' : 'fa-check'"></i>
+                    </button>
+                    <button (click)="deleteTodo(todo.id)" class="btn btn-danger btn-sm ms-2">
+                      <i class="fas fa-trash"></i>
+                    </button>
+                    <button *ngIf="!todo.editing" (click)="editTodo(todo)" class="btn btn-warning btn-sm ms-2">
+                      <i class="fas fa-edit"></i>
+                    </button>
+                    <button *ngIf="todo.editing" (click)="saveTodo(todo)" class="btn btn-success btn-sm ms-2">
+                      <i class="fas fa-save"></i>
+                    </button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
           </div>
         </div>
       </div>
     </div>
-  </section>
+  </div>
+</section>
