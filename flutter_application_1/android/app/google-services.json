@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "398506827783",
+    "project_id": "angular-flutter-cloud",
+    "storage_bucket": "angular-flutter-cloud.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:398506827783:android:fe4b03547d1b4c0135caa2",
+        "android_client_info": {
+          "package_name": "net.efrei.todos"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDiOySOiGQRw8Lrg8Cc5zs9-yMPIKsLbgs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
