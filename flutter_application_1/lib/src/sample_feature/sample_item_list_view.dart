@@ -17,9 +17,12 @@ class _SampleItemListViewState extends State<SampleItemListView> {
   DateTime selectedDate = DateTime.now();
   String selectedUser = '';
 
-  // Method to fetch users
   Stream<QuerySnapshot> getUsers() {
-    return FirebaseFirestore.instance.collection('users').snapshots();
+    final currentUserEmail = FirebaseAuth.instance.currentUser?.email;
+    return FirebaseFirestore.instance
+        .collection('users')
+        .where('email', isNotEqualTo: currentUserEmail)
+        .snapshots();
   }
 
   @override
