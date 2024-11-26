@@ -4,10 +4,15 @@ import 'package:intl/intl.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import '../models/todo.dart';
 
-class SampleItemListView extends StatelessWidget {
+class SampleItemListView extends StatefulWidget {
   const SampleItemListView({super.key});
 
-  static const routeName = '/';
+  @override
+  State<SampleItemListView> createState() => _SampleItemListViewState();
+}
+
+class _SampleItemListViewState extends State<SampleItemListView> {
+  DateTime selectedDate = DateTime.now();
 
   @override
   Widget build(BuildContext context) {
@@ -264,19 +269,23 @@ class SampleItemListView extends StatelessWidget {
                             firstDate: DateTime.now(),
                             lastDate: DateTime(2025),
                           );
-                          if (date != null) {
+
+                          if (date != null && context.mounted) {
                             final TimeOfDay? time = await showTimePicker(
                               context: context,
                               initialTime: TimeOfDay.now(),
                             );
-                            if (time != null) {
-                              selectedDate = DateTime(
-                                date.year,
-                                date.month,
-                                date.day,
-                                time.hour,
-                                time.minute,
-                              );
+
+                            if (time != null && context.mounted) {
+                              setState(() {
+                                selectedDate = DateTime(
+                                  date.year,
+                                  date.month,
+                                  date.day,
+                                  time.hour,
+                                  time.minute,
+                                );
+                              });
                             }
                           }
                         },
