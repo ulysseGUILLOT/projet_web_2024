@@ -4,8 +4,10 @@
       <div class="col col-xl-10">
         <div class="card" style="border-radius: 15px;">
           <div class="card-body p-5">
-            <h6 class="mb-3">Des choses à faire</h6>
-            <button class="btn btn-primary btn-lg mb-4" (click)="openAddTodoModal()">Add Todo</button>
+            <h1 class="mb-3 text-center">To-do list</h1>
+            <div class="d-flex justify-content-center mb-4">
+              <button class="btn btn-primary btn-lg" (click)="openAddTodoModal()">Add Task</button>
+            </div>
             <table class="table">
               <thead>
                 <tr>
@@ -31,23 +33,16 @@
                   <td class="due-date">
                     <div class="d-flex align-items-center">
                       {{ todo.dueDate?.toDate() | date:'dd/MM/yyyy' }}
-                      <i *ngIf="isDueSoon(todo.dueDate?.toDate())" class="fas fa-exclamation-triangle text-warning ms-2"></i>
-                      <i *ngIf="isDueDatePassed(todo.dueDate?.toDate())" class="fas fa-exclamation-triangle text-danger ms-2"></i>
+                      <i *ngIf="isDueSoon(todo.dueDate?.toDate())"
+                        class="fas fa-exclamation-triangle text-warning ms-2"></i>
+                      <i *ngIf="isDueDatePassed(todo.dueDate?.toDate())"
+                        class="fas fa-exclamation-triangle text-danger ms-2"></i>
                     </div>
                   </td>
                   <td class="action">
-                    <button (click)="toggleTodoStatus(todo)" class="btn btn-secondary btn-sm">
-                      <i class="fas" [ngClass]="todo.completed ? 'fa-undo' : 'fa-check'"></i>
-                    </button>
-                    <button (click)="deleteTodo(todo.id)" class="btn btn-danger btn-sm ms-2">
-                      <i class="fas fa-trash"></i>
-                    </button>
-                    <button *ngIf="!todo.editing" (click)="editTodo(todo)" class="btn btn-warning btn-sm ms-2">
-                      <i class="fas fa-edit"></i>
-                    </button>
-                    <button *ngIf="todo.editing" (click)="saveTodo(todo)" class="btn btn-success btn-sm ms-2">
-                      <i class="fas fa-save"></i>
-                    </button>
+                    <app-todo-actions [todo]="todo" (toggleStatus)="toggleTodoStatus($event)"
+                      (delete)="deleteTodo($event)" (edit)="editTodo($event)"
+                      (save)="saveTodo($event)"></app-todo-actions>
                   </td>
                 </tr>
               </tbody>
@@ -68,24 +63,7 @@
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
-        <form (submit)="addTodo()">
-          <div class="mb-3">
-            <label for="title" class="form-label">Titre</label>
-            <input type="text" class="form-control" id="title" [(ngModel)]="newTodo" name="newTodo" required>
-          </div>
-          <div class="mb-3">
-            <label for="description" class="form-label">Description</label>
-            <textarea class="form-control" id="description" [(ngModel)]="newText" name="newText" rows="3" required></textarea>
-          </div>
-          <div class="mb-3">
-            <label for="dueDate" class="form-label">Date de fin</label>
-            <input type="date" class="form-control" id="dueDate" [(ngModel)]="newDueDate" name="newDueDate" [min]="minDate" required>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
-            <button type="submit" class="btn btn-primary">Ajouter</button>
-          </div>
-        </form>
+        <app-add-todo-form (addTodo)="addTodo()"></app-add-todo-form>
       </div>
     </div>
   </div>

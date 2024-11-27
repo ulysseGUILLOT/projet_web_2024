@@ -4,13 +4,16 @@ import { Observable } from 'rxjs';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import * as bootstrap from 'bootstrap';
+import { AddTodoFormComponent } from './add-todo-form/add-todo-form.component';
+import { TodoActionsComponent } from './todo-actions/todo-actions.component';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-todolist',
   standalone: true,
-  imports: [FormsModule, CommonModule],
+  imports: [FormsModule, CommonModule, AddTodoFormComponent, TodoActionsComponent],
   templateUrl: './todolist.component.html',
-  styleUrl: './todolist.component.scss'
+  styleUrls: ['./todolist.component.scss']
 })
 export class TodolistComponent implements OnInit {
   todos$: Observable<any[]>;
@@ -20,7 +23,7 @@ export class TodolistComponent implements OnInit {
   minDate: string = '';
   selectedTodo: any = null;
 
-  constructor(private firestore: Firestore) {
+  constructor(private firestore: Firestore, private authService: AuthService) {
     const todosCollection = collection(this.firestore, 'todos');
     this.todos$ = collectionData(todosCollection, { idField: 'id' });
   }
@@ -48,9 +51,28 @@ export class TodolistComponent implements OnInit {
     descriptionModal.show();
   }
 
-  addTodo() {
+  async addTodo() {
     const todosCollection = collection(this.firestore, 'todos');
-    addDoc(todosCollection, { title: this.newTodo, text: this.newText, dateAdded: new Date(), dueDate: new Date(this.newDueDate), completed: false });
+    const currentUserEmail = this.authService.getCurrentUserEmail();
+    const participants = [currentUserEmail];
+    const dueDate = new Date(this.newDueDate);
+
+    if (isNaN(dueDate.getTime())) {
+      console.error('Invalid date');
+      return;
+    }
+
+    await addDoc(todosCollection, {
+      title: this.newTodo,
+      text: this.newText,
+      dateAdded: new Date(),
+      dueDate: dueDate,
+      completed: false,
+      assignedTo: currentUserEmail,
+      participants: participants,
+      createdBy: currentUserEmail
+    });
+
     this.newTodo = '';
     this.newText = '';
     this.newDueDate = '';
