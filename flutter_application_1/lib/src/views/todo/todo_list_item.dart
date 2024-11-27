@@ -7,10 +7,10 @@ import 'edit_todo_modal.dart';
 
 class TodoListItem extends StatelessWidget {
   const TodoListItem({
-    Key? key,
+    super.key,
     required this.todo,
     required this.currentUserEmail,
-  }) : super(key: key);
+  });
 
   final Todo todo;
   final String currentUserEmail;
@@ -105,7 +105,7 @@ class TodoListItem extends StatelessWidget {
           children: [
             if (todo.assignedTo != null && todo.assignedTo!.isNotEmpty)
               Text(
-                'Assigned to: ${todo.assignedTo}',
+                'Assigned to: ${todo.assignedTo == currentUserEmail ? 'Me' : todo.assignedTo}',
                 style: TextStyle(
                   color: Colors.grey[600],
                   fontSize: 12,
