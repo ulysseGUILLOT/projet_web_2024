@@ -1,0 +1,48 @@
+<table class="table">
+    <thead>
+      <tr>
+        <th scope="col">Todo Item</th>
+        <th scope="col">Status</th>
+        <th scope="col">Due Date</th>
+        <th scope="col">Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let todo of todos">
+        <td class="todo-item">
+          <div [ngClass]="{'text-decoration-line-through': todo.completed}">
+            <div *ngIf="!todo.editing">{{ todo.title }}</div>
+            <input *ngIf="todo.editing" [(ngModel)]="todo.title" class="form-control" />
+            <small class="text-muted">Ajouté le: {{ todo.dateAdded?.toDate() | date:'short' }}</small>
+            <div>
+                <button class="btn btn-link p-0" (click)="openDescriptionModal.emit(todo)">Description</button>
+            </div>
+          </div>
+        </td>
+        <td class="status">
+          {{ todo.completed ? 'Fini' : 'En cours' }}
+        </td>
+        <td class="due-date">
+          <div class="d-flex align-items-center">
+            {{ todo.dueDate?.toDate() | date:'dd/MM/yyyy' }}
+            <i *ngIf="isDueSoon(todo.dueDate?.toDate())" class="fas fa-exclamation-triangle text-warning ms-2"></i>
+            <i *ngIf="isDueDatePassed(todo.dueDate?.toDate())" class="fas fa-exclamation-triangle text-danger ms-2"></i>
+          </div>
+        </td>
+        <td class="action">
+          <button (click)="toggleStatus.emit(todo)" class="btn btn-secondary btn-sm">
+            <i class="fas" [ngClass]="todo.completed ? 'fa-undo' : 'fa-check'"></i>
+          </button>
+          <button (click)="deleteTodo.emit(todo.id)" class="btn btn-danger btn-sm ms-2">
+            <i class="fas fa-trash"></i>
+          </button>
+          <button *ngIf="!todo.editing" (click)="editTodo.emit(todo)" class="btn btn-warning btn-sm ms-2">
+            <i class="fas fa-edit"></i>
+          </button>
+          <button *ngIf="todo.editing" (click)="saveTodo.emit(todo)" class="btn btn-success btn-sm ms-2">
+            <i class="fas fa-save"></i>
+          </button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
