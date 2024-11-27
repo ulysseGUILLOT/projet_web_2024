@@ -6,7 +6,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import '../../models/todo.dart';
 
 class EditTodoModal extends StatefulWidget {
-  const EditTodoModal({Key? key, required this.todo}) : super(key: key);
+  const EditTodoModal({super.key, required this.todo});
 
   final Todo todo;
 
@@ -53,11 +53,15 @@ class _EditTodoModalState extends State<EditTodoModal> {
       lastDate: DateTime(2025),
     );
 
+    if (!mounted) return;
+
     if (date != null) {
       final TimeOfDay? time = await showTimePicker(
         context: context,
         initialTime: TimeOfDay.fromDateTime(_selectedDate),
       );
+
+      if (!mounted) return;
 
       if (time != null) {
         setState(() {
@@ -128,29 +132,45 @@ class _EditTodoModalState extends State<EditTodoModal> {
               builder: (context, snapshot) {
                 if (!snapshot.hasData) {
                   return const CircularProgressIndicator();
-                } else {
-                  List<DropdownMenuItem<String>> userItems =
-                      snapshot.data!.docs.map((doc) {
-                    String email = doc['email'];
-                    return DropdownMenuItem(
+                }
+
+                // Create items list with "Unassigned" option
+                final List<DropdownMenuItem<String>> userItems = [
+                  DropdownMenuItem(
+                    value: _currentUserEmail, // Default to current user
+                    child: const Text('Me'),
+                  ),
+                ];
+
+                // Add other users (excluding current user)
+                for (var doc in snapshot.data!.docs) {
+                  final String email = doc['email'] as String;
+                  if (email != _currentUserEmail) {
+                    userItems.add(DropdownMenuItem(
                       value: email,
                       child: Text(email),
-                    );
-                  }).toList();
-
-                  return DropdownButtonFormField<String>(
-                    decoration: const InputDecoration(
-                      labelText: 'Assign to',
-                    ),
-                    value: _assignedTo.isEmpty ? null : _assignedTo,
-                    items: userItems,
-                    onChanged: (value) {
-                      setState(() {
-                        _assignedTo = value ?? '';
-                      });
-                    },
-                  );
+                    ));
+                  }
                 }
+
+                // Default to current user if no assignment
+                _assignedTo =
+                    _assignedTo.isEmpty ? _currentUserEmail : _assignedTo;
+
+                return DropdownButtonFormField<String>(
+                  decoration: const InputDecoration(
+                    labelText: 'Assign to',
+                    border: OutlineInputBorder(),
+                  ),
+                  value: _assignedTo,
+                  items: userItems,
+                  onChanged: (value) {
+                    setState(() {
+                      _assignedTo = value ??
+                          _currentUserEmail; // Default to current user if null
+                    });
+                  },
+                );
               },
             ),
             ListTile(
