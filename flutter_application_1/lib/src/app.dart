@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
-import 'features/auth/login_view.dart';
-import 'sample_feature/sample_item_details_view.dart';
-import 'sample_feature/sample_item_list_view.dart';
+import 'views/auth/login_view.dart';
+import 'views/auth/register_view.dart';
+import 'views/todo/todo_list_view.dart';
 import 'settings/settings_controller.dart';
 import 'settings/settings_view.dart';
 
@@ -71,11 +71,11 @@ class MyApp extends StatelessWidget {
                 switch (routeSettings.name) {
                   case SettingsView.routeName:
                     return SettingsView(controller: settingsController);
-                  case SampleItemDetailsView.routeName:
-                    return const SampleItemDetailsView();
-                  case SampleItemListView.routeName:
+                  case RegisterView.routeName:
+                    return const RegisterView();
+                  case TodoListView.routeName:
                   default:
-                    return const SampleItemListView();
+                    return const TodoListView();
                 }
               },
             );
@@ -84,7 +84,7 @@ class MyApp extends StatelessWidget {
             stream: FirebaseAuth.instance.authStateChanges(),
             builder: (context, snapshot) {
               if (snapshot.hasData) {
-                return const SampleItemListView();
+                return const TodoListView();
               }
               return const LoginView();
             },

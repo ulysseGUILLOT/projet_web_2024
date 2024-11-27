@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/src/views/auth/register_view.dart';
 import '../../services/auth_service.dart';
 
 class LoginView extends StatefulWidget {
@@ -67,7 +68,7 @@ class _LoginViewState extends State<LoginView> {
             ),
             TextButton(
               onPressed: () {
-                // Navigate to registration
+                Navigator.pushNamed(context, RegisterView.routeName);
               },
               child: const Text('Create an account'),
             ),
