@@ -37,6 +37,11 @@ export class TodolistComponent implements OnInit {
     this.minDate = `${year}-${month}-${day}`;
   }
 
+  openAddTodoModal() {
+    const addTodoModal = new bootstrap.Modal(document.getElementById('addTodoModal')!);
+    addTodoModal.show();
+  }
+
   openDescriptionModal(todo: any) {
     this.selectedTodo = todo;
     const descriptionModal = new bootstrap.Modal(document.getElementById('descriptionModal')!);
@@ -49,6 +54,11 @@ export class TodolistComponent implements OnInit {
     this.newTodo = '';
     this.newText = '';
     this.newDueDate = '';
+    const addTodoModalElement = document.getElementById('addTodoModal');
+    if (addTodoModalElement) {
+      const addTodoModal = bootstrap.Modal.getInstance(addTodoModalElement);
+      addTodoModal?.hide();
+    }
   }
 
   deleteTodo(id: string) {
