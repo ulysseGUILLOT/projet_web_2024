@@ -6,7 +6,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import '../../models/todo.dart';
 
 class EditTodoModal extends StatefulWidget {
-  const EditTodoModal({Key? key, required this.todo}) : super(key: key);
+  const EditTodoModal({super.key, required this.todo});
 
   final Todo todo;
 
@@ -53,11 +53,15 @@ class _EditTodoModalState extends State<EditTodoModal> {
       lastDate: DateTime(2025),
     );
 
+    if (!mounted) return;
+
     if (date != null) {
       final TimeOfDay? time = await showTimePicker(
         context: context,
         initialTime: TimeOfDay.fromDateTime(_selectedDate),
       );
+
+      if (!mounted) return;
 
       if (time != null) {
         setState(() {
