@@ -14,7 +14,7 @@
             required>
     </div>
     <div class="mb-3">
-        <label for="assignedTo" class="form-label">Due Date</label>
+        <label for="assignedTo" class="form-label">Asigned To</label>
         <select class="form-control" id="assignedTo" [(ngModel)]="assignedTo" name="assignedTo" required>
             <option *ngFor="let user of users" [value]="user.email">{{ user.email }}</option>
         </select>
