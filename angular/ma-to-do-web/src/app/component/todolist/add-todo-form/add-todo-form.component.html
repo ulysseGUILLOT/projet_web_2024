@@ -10,7 +10,8 @@
     </div>
     <div class="mb-3">
         <label for="dueDate" class="form-label">Date d'échéance</label>
-        <input type="date" class="form-control" id="dueDate" [(ngModel)]="newDueDate" name="newDueDate" required>
+        <input type="date" class="form-control" id="dueDate" [(ngModel)]="newDueDate" name="newDueDate" [min]="minDate"
+            required>
     </div>
     <div class="mb-3">
         <label for="assignedTo" class="form-label">Assigné à</label>

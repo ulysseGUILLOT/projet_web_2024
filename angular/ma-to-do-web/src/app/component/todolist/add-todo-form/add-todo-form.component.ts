@@ -8,7 +8,7 @@ import { AuthService } from '../../../services/auth.service';
   standalone: true,
   imports: [FormsModule, CommonModule],
   templateUrl: './add-todo-form.component.html',
-  styleUrl: './add-todo-form.component.scss'
+  styleUrls: ['./add-todo-form.component.scss']
 })
 export class AddTodoFormComponent implements OnInit {
   newTodo: string = '';
@@ -16,13 +16,24 @@ export class AddTodoFormComponent implements OnInit {
   newDueDate: string = '';
   assignedTo: string = '';
   users: any[] = [];
+  minDate: string = '';
 
   @Output() addTodo = new EventEmitter<any>();
 
-  constructor(private authService: AuthService) {}
+  constructor(private authService: AuthService) {
+    this.setMinDate();
+  }
 
   async ngOnInit() {
     this.users = await this.authService.getUsers();
+  }
+
+  setMinDate() {
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = (today.getMonth() + 1).toString().padStart(2, '0');
+    const day = today.getDate().toString().padStart(2, '0');
+    this.minDate = `${year}-${month}-${day}`;
   }
 
   onSubmit() {

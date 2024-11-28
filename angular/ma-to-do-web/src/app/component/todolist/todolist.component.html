@@ -24,7 +24,9 @@
                       <div *ngIf="!todo.editing">{{ todo.title }}</div>
                       <input *ngIf="todo.editing" [(ngModel)]="todo.title" class="form-control" />
                       <small class="text-muted">Ajouté le: {{ todo.dateAdded?.toDate() | date:'short' }}</small>
-                      <button class="btn btn-link p-0" (click)="openDescriptionModal(todo)">Description</button>
+                      <div>
+                        <button class="btn btn-link p-0" (click)="openDescriptionModal(todo)">Description</button>
+                      </div>
                     </div>
                   </td>
                   <td class="status">
@@ -32,10 +34,10 @@
                   </td>
                   <td class="due-date">
                     <div class="d-flex align-items-center">
-                      {{ todo.dueDate?.toDate() | date:'dd/MM/yyyy' }}
-                      <i *ngIf="isDueSoon(todo.dueDate?.toDate())"
+                      {{ todo.dueDate?.toDate ? (todo.dueDate.toDate() | date:'dd/MM/yyyy') : 'No due date' }}
+                      <i *ngIf="todo.dueDate?.toDate && isDueSoon(todo.dueDate.toDate())"
                         class="fas fa-exclamation-triangle text-warning ms-2"></i>
-                      <i *ngIf="isDueDatePassed(todo.dueDate?.toDate())"
+                      <i *ngIf="todo.dueDate?.toDate && isDueDatePassed(todo.dueDate.toDate())"
                         class="fas fa-exclamation-triangle text-danger ms-2"></i>
                     </div>
                   </td>
@@ -63,7 +65,7 @@
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
-        <app-add-todo-form (addTodo)="addTodo()"></app-add-todo-form>
+        <app-add-todo-form (addTodo)="addTodo($event)"></app-add-todo-form>
       </div>
     </div>
   </div>

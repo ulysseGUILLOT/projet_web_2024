@@ -15,29 +15,16 @@ import { AuthService } from '../../services/auth.service';
   templateUrl: './todolist.component.html',
   styleUrls: ['./todolist.component.scss']
 })
-export class TodolistComponent implements OnInit {
+export class TodolistComponent {
   todos$: Observable<any[]>;
   newTodo: string = '';
   newText: string = '';
   newDueDate: string = '';
-  minDate: string = '';
   selectedTodo: any = null;
 
   constructor(private firestore: Firestore, private authService: AuthService) {
     const todosCollection = collection(this.firestore, 'todos');
     this.todos$ = collectionData(todosCollection, { idField: 'id' });
-  }
-
-  ngOnInit(): void {
-    this.setMinDate();
-  }
-
-  setMinDate() {
-    const today = new Date();
-    const year = today.getFullYear();
-    const month = (today.getMonth() + 1).toString().padStart(2, '0');
-    const day = today.getDate().toString().padStart(2, '0');
-    this.minDate = `${year}-${month}-${day}`;
   }
 
   openAddTodoModal() {
@@ -51,37 +38,27 @@ export class TodolistComponent implements OnInit {
     descriptionModal.show();
   }
 
-  async addTodo() {
+  async addTodo(todoData: { title: string; text: string; dueDate: string; assignedTo: string }) {
     const todosCollection = collection(this.firestore, 'todos');
     const currentUserEmail = this.authService.getCurrentUserEmail();
     const participants = [currentUserEmail];
-    const dueDate = new Date(this.newDueDate);
-
-    if (isNaN(dueDate.getTime())) {
-      console.error('Invalid date');
-      return;
-    }
-
     await addDoc(todosCollection, {
-      title: this.newTodo,
-      text: this.newText,
+      title: todoData.title,
+      text: todoData.text,
       dateAdded: new Date(),
-      dueDate: dueDate,
+      dueDate: todoData.dueDate ? new Date(todoData.dueDate) : null,
       completed: false,
-      assignedTo: currentUserEmail,
+      assignedTo: todoData.assignedTo || currentUserEmail,
       participants: participants,
       createdBy: currentUserEmail
     });
-
-    this.newTodo = '';
-    this.newText = '';
-    this.newDueDate = '';
     const addTodoModalElement = document.getElementById('addTodoModal');
     if (addTodoModalElement) {
       const addTodoModal = bootstrap.Modal.getInstance(addTodoModalElement);
       addTodoModal?.hide();
     }
   }
+
 
   deleteTodo(id: string) {
     const todoDoc = doc(this.firestore, `todos/${id}`);
