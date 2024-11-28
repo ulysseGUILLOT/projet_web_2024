@@ -12,6 +12,7 @@
               <thead>
                 <tr>
                   <th scope="col">Todo Item</th>
+                  <th scope="col">Asigned To</th>
                   <th scope="col">Status</th>
                   <th scope="col">Due Date</th>
                   <th scope="col">Action</th>
@@ -28,6 +29,9 @@
                         <button class="btn btn-link p-0" (click)="openDescriptionModal(todo)">Description</button>
                       </div>
                     </div>
+                  </td>
+                  <td class="assigned-to">
+                    {{ todo.assignedTo }}
                   </td>
                   <td class="status">
                     {{ todo.completed ? 'Fini' : 'En cours' }}
@@ -58,7 +62,7 @@
 
 <!-- Add Todo Modal -->
 <div class="modal fade" id="addTodoModal" tabindex="-1" aria-labelledby="addTodoModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
+  <div class="modal-dialog modal-lg-custom">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title" id="addTodoModalLabel">Ajouter une tâche</h5>

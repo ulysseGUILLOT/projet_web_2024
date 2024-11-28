@@ -1,41 +1,46 @@
 .text-decoration-line-through {
-    text-decoration: line-through;
-  }
-  
-  .table {
-    margin-top: 20px;
-  }
-  
-  .table th, .table td {
-    vertical-align: middle;
-  }
-  
-  .table th.todo-item, .table td.todo-item {
-    width: 40%;
-  }
-  
-  .table th.status, .table td.status {
-    width: 20%;
-  }
-  
-  .table th.due-date, .table td.due-date {
-    width: 20%;
-  }
-  
-  .table th.action, .table td.action {
-    width: 20%;
-  }
-  
-  .due-date .d-flex {
-    display: flex;
-    align-items: center;
-  }
+  text-decoration: line-through;
+}
 
-  .modal-body {
-    max-height: 400px;
-    overflow-y: auto;
-  }
-  
-  .text-wrap {
-    word-wrap: break-word;
-  }
+.table {
+  margin-top: 20px;
+}
+
+.table th,
+.table td {
+  vertical-align: middle;
+}
+
+.table th.todo-item,
+.table td.todo-item {
+  width: 40%;
+}
+
+.table th.status,
+.table td.status {
+  width: 20%;
+}
+
+.table th.due-date,
+.table td.due-date {
+  width: 20%;
+}
+
+.table th.action,
+.table td.action {
+  width: 20%;
+}
+
+.due-date .d-flex {
+  display: flex;
+  align-items: center;
+}
+
+.modal-body {
+  max-height: 600px;
+  overflow-y: auto;
+}
+
+.text-wrap {
+  word-wrap: break-word;
+}
