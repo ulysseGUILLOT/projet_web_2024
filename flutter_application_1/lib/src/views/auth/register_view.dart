@@ -4,7 +4,7 @@ import '../../services/auth_service.dart';
 class RegisterView extends StatefulWidget {
   const RegisterView({super.key});
 
-  static const routeName = '/register'; // Add route name
+  static const routeName = '/register';
 
   @override
   State<RegisterView> createState() => _RegisterViewState();
@@ -52,15 +52,17 @@ class _RegisterViewState extends State<RegisterView> {
             const SizedBox(height: 24),
             ElevatedButton(
               onPressed: () async {
+                final navigator = Navigator.of(context);
+                final scaffoldMessenger = ScaffoldMessenger.of(context);
+
                 try {
                   await _authService.registerWithEmailAndPassword(
                     _emailController.text.trim(),
                     _passwordController.text.trim(),
                   );
-                  if (!mounted) return;
-                  Navigator.pushReplacementNamed(context, '/');
+                  navigator.pushReplacementNamed('/');
                 } catch (e) {
-                  ScaffoldMessenger.of(context).showSnackBar(
+                  scaffoldMessenger.showSnackBar(
                     SnackBar(content: Text(e.toString())),
                   );
                 }

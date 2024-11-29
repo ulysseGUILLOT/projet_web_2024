@@ -4,7 +4,7 @@ import 'package:intl/intl.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 class AddTodoModal extends StatefulWidget {
-  const AddTodoModal({Key? key}) : super(key: key);
+  const AddTodoModal({super.key});
 
   @override
   State<AddTodoModal> createState() => _AddTodoModalState();

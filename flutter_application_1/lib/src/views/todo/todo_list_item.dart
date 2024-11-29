@@ -33,7 +33,7 @@ class TodoListItem extends StatelessWidget {
           content: const Text('Are you sure you want to delete this todo?'),
           actions: [
             TextButton(
-              onPressed: () => Navigator.pop(context), // Close the dialog
+              onPressed: () => Navigator.pop(context),
               child: const Text('Cancel'),
             ),
             TextButton(
@@ -42,7 +42,7 @@ class TodoListItem extends StatelessWidget {
                     .collection('todos')
                     .doc(todo.id)
                     .delete();
-                Navigator.pop(context); // Close the dialog
+                Navigator.pop(context);
               },
               child: const Text(
                 'Delete',
@@ -58,14 +58,12 @@ class TodoListItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      // Existing code for the container decoration
       margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       decoration: BoxDecoration(
         color: Theme.of(context).primaryColor.withOpacity(0.1),
         borderRadius: BorderRadius.circular(12),
       ),
       child: ListTile(
-        // Existing code for the ListTile
         leading: Checkbox(
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(5),
