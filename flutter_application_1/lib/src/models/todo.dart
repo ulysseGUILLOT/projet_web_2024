@@ -6,7 +6,7 @@ class Todo {
   final String text;
   final bool completed;
   final DateTime dateAdded;
-  final DateTime dueDate;
+  final DateTime? dueDate;
   final String? assignedTo;
   final List<String>? participants;
   final String createdBy;
@@ -17,7 +17,7 @@ class Todo {
     required this.text,
     required this.completed,
     required this.dateAdded,
-    required this.dueDate,
+    this.dueDate,
     this.assignedTo,
     this.participants,
     required this.createdBy,
@@ -30,7 +30,9 @@ class Todo {
       text: data['text'] ?? '',
       completed: data['completed'] ?? false,
       dateAdded: (data['dateAdded'] as Timestamp).toDate(),
-      dueDate: (data['dueDate'] as Timestamp).toDate(),
+      dueDate: data['dueDate'] != null
+          ? (data['dueDate'] as Timestamp).toDate()
+          : null,
       assignedTo: data['assignedTo'],
       participants: List<String>.from(data['participants'] ?? []),
       createdBy: data['createdBy'] ?? '',

@@ -17,7 +17,7 @@ class EditTodoModal extends StatefulWidget {
 class _EditTodoModalState extends State<EditTodoModal> {
   late TextEditingController _titleController;
   late TextEditingController _textController;
-  late DateTime _selectedDate;
+  DateTime? _selectedDate; // Make nullable
   String _assignedTo = '';
   final String _currentUserEmail =
       FirebaseAuth.instance.currentUser?.email ?? '';
@@ -27,7 +27,7 @@ class _EditTodoModalState extends State<EditTodoModal> {
     super.initState();
     _titleController = TextEditingController(text: widget.todo.title);
     _textController = TextEditingController(text: widget.todo.text);
-    _selectedDate = widget.todo.dueDate;
+    _selectedDate = widget.todo.dueDate; // Remove ! operator
     _assignedTo = widget.todo.assignedTo ?? '';
   }
 
@@ -48,7 +48,7 @@ class _EditTodoModalState extends State<EditTodoModal> {
   Future<void> _selectDueDate() async {
     final DateTime? date = await showDatePicker(
       context: context,
-      initialDate: _selectedDate,
+      initialDate: _selectedDate ?? DateTime.now(),
       firstDate: DateTime.now(),
       lastDate: DateTime(2025),
     );
@@ -58,7 +58,7 @@ class _EditTodoModalState extends State<EditTodoModal> {
     if (date != null) {
       final TimeOfDay? time = await showTimePicker(
         context: context,
-        initialTime: TimeOfDay.fromDateTime(_selectedDate),
+        initialTime: TimeOfDay.fromDateTime(_selectedDate ?? DateTime.now()),
       );
 
       if (!mounted) return;
@@ -77,29 +77,23 @@ class _EditTodoModalState extends State<EditTodoModal> {
     }
   }
 
-  void _updateTodo() {
-    final String updatedTitle = _titleController.text.trim();
-    final String updatedText = _textController.text.trim();
+  // Update form submission to handle null date
+  void _saveTodo() {
+    final Map<String, dynamic> updateData = {
+      'title': _titleController.text.trim(),
+      'text': _textController.text.trim(),
+      'assignedTo': _assignedTo,
+    };
 
-    if (updatedTitle.isNotEmpty) {
-      List<String> participants = [_currentUserEmail];
-      if (_assignedTo.isNotEmpty && _assignedTo != _currentUserEmail) {
-        participants.add(_assignedTo);
-      }
-
-      FirebaseFirestore.instance
-          .collection('todos')
-          .doc(widget.todo.id)
-          .update({
-        'title': updatedTitle,
-        'text': updatedText,
-        'dueDate': Timestamp.fromDate(_selectedDate),
-        'assignedTo': _assignedTo,
-        'participants': participants,
-      });
-
-      Navigator.pop(context);
+    // Only add dueDate if it's not null
+    if (_selectedDate != null) {
+      updateData['dueDate'] = Timestamp.fromDate(_selectedDate!);
     }
+
+    FirebaseFirestore.instance
+        .collection('todos')
+        .doc(widget.todo.id)
+        .update(updateData);
   }
 
   @override
@@ -175,8 +169,8 @@ class _EditTodoModalState extends State<EditTodoModal> {
             ),
             ListTile(
               title: const Text('Due Date'),
-              subtitle:
-                  Text(DateFormat('dd/MM/yyyy HH:mm').format(_selectedDate)),
+              subtitle: Text(DateFormat('dd/MM/yyyy HH:mm')
+                  .format(_selectedDate ?? DateTime.now())),
               trailing: IconButton(
                 icon: const Icon(Icons.calendar_today),
                 onPressed: _selectDueDate,
@@ -191,7 +185,7 @@ class _EditTodoModalState extends State<EditTodoModal> {
                 ),
                 const SizedBox(width: 8),
                 ElevatedButton(
-                  onPressed: _updateTodo,
+                  onPressed: _saveTodo,
                   child: const Text('Update Todo'),
                 ),
               ],

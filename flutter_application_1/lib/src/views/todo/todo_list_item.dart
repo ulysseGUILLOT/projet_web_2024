@@ -113,11 +113,13 @@ class TodoListItem extends StatelessWidget {
                 ),
               ),
             Text(
-              'Due: ${DateFormat('dd MMM yyyy HH:mm').format(todo.dueDate)}',
+              'Due: ${todo.dueDate != null ? DateFormat('dd MMM yyyy HH:mm').format(todo.dueDate!) : 'No due date'}',
               style: TextStyle(
-                color: todo.dueDate.isBefore(DateTime.now())
+                color: todo.dueDate?.isBefore(DateTime.now()) ?? false
                     ? Colors.red
                     : Colors.grey[600],
+                fontSize: 12,
+                fontStyle: FontStyle.italic,
               ),
             ),
           ],
