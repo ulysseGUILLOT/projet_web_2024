@@ -1,4 +1,4 @@
-<ng-container *ngIf="isAuthenticated()">
+<ng-container *ngIf="isAuthenticated() && showHeader">
     <app-header></app-header>
 </ng-container>
 <router-outlet></router-outlet>

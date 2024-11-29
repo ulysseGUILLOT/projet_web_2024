@@ -28,7 +28,7 @@ export class SignupComponent {
       const { email, password } = this.signupForm.value;
       try {
         await this.authService.registerWithEmailAndPassword(email, password);
-        this.router.navigate(['/']);
+        this.router.navigate(['/login']);
       } catch (error) {
         this.errorMessage = error as string;
       }
