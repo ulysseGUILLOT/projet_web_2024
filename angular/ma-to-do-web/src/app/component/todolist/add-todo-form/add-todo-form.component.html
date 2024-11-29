@@ -1,25 +1,32 @@
 <form (submit)="onSubmit()">
-    <div class="mb-3">
-        <label for="title" class="form-label">Title</label>
-        <input type="text" class="form-control" id="title" [(ngModel)]="newTodo" name="newTodo" required>
+  <div class="mb-3">
+    <label for="title" class="form-label">Title</label>
+    <input type="text" class="form-control" id="title" [(ngModel)]="newTodo" name="newTodo" required>
+  </div>
+  <div class="mb-3">
+    <label for="description" class="form-label">Description</label>
+    <textarea class="form-control" id="description" [(ngModel)]="newText" name="newText" rows="3" required></textarea>
+  </div>
+  <div class="mb-3">
+    <label for="dueDate" class="form-label">Due Date</label>
+    <input
+      type="date"
+      class="form-control"
+      id="dueDate"
+      [(ngModel)]="newDueDate"
+      name="newDueDate"
+      required>
+    <div *ngIf="dateError" class="text-danger mt-1">
+      The selected due date cannot be earlier than today.
     </div>
-    <div class="mb-3">
-        <label for="description" class="form-label">Description</label>
-        <textarea class="form-control" id="description" [(ngModel)]="newText" name="newText" rows="3"
-            required></textarea>
-    </div>
-    <div class="mb-3">
-        <label for="dueDate" class="form-label">Due Date</label>
-        <input type="date" class="form-control" id="dueDate" [(ngModel)]="newDueDate" name="newDueDate" [min]="minDate"
-            required>
-    </div>
-    <div class="mb-3">
-        <label for="assignedTo" class="form-label">Asigned To</label>
-        <select class="form-control" id="assignedTo" [(ngModel)]="assignedTo" name="assignedTo" required>
-            <option *ngFor="let user of users" [value]="user.email">{{ user.email }}</option>
-        </select>
-    </div>
-    <div class="d-flex justify-content-center">
-        <button type="submit" class="btn btn-primary">Add</button>
-    </div>
+  </div>
+  <div class="mb-3">
+    <label for="assignedTo" class="form-label">Assigned To</label>
+    <select class="form-control" id="assignedTo" [(ngModel)]="assignedTo" name="assignedTo" required>
+      <option *ngFor="let user of users" [value]="user.email">{{ user.email }}</option>
+    </select>
+  </div>
+  <div class="d-flex justify-content-center">
+    <button type="submit" class="btn btn-primary">Add</button>
+  </div>
 </form>

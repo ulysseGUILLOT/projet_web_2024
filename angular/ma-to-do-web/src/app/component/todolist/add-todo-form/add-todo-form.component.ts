@@ -17,6 +17,7 @@ export class AddTodoFormComponent implements OnInit {
   assignedTo: string = '';
   users: any[] = [];
   minDate: string = '';
+  dateError: boolean = false; // Nouvelle propriété pour gérer l'état d'erreur
 
   @Output() addTodo = new EventEmitter<any>();
 
@@ -37,7 +38,23 @@ export class AddTodoFormComponent implements OnInit {
   }
 
   onSubmit() {
-    this.addTodo.emit({ title: this.newTodo, text: this.newText, dueDate: this.newDueDate, assignedTo: this.assignedTo });
+    // Vérification de la validité de la date
+    if (new Date(this.newDueDate) < new Date(this.minDate)) {
+      this.dateError = true; // Active l'erreur si la date est invalide
+      return;
+    }
+
+    this.dateError = false; // Réinitialise l'état de l'erreur si la date est valide
+
+    // Émission de l'événement si toutes les validations passent
+    this.addTodo.emit({
+      title: this.newTodo,
+      text: this.newText,
+      dueDate: this.newDueDate,
+      assignedTo: this.assignedTo,
+    });
+
+    // Réinitialisation des champs après la soumission
     this.newTodo = '';
     this.newText = '';
     this.newDueDate = '';
