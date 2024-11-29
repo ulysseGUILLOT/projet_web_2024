@@ -21,11 +21,12 @@ export class AddTodoFormComponent implements OnInit {
 
   @Output() addTodo = new EventEmitter<any>();
 
-  constructor(private authService: AuthService) {}
+  constructor(private authService: AuthService) {
+  }
 
   async ngOnInit() {
     this.setMinDate();
-    // Fetch users or any other initialization logic
+    this.users = await this.authService.getUsers();
   }
 
   setMinDate() {
