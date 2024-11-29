@@ -41,7 +41,7 @@ class _TodoListViewState extends State<TodoListView> {
       body: StreamBuilder<QuerySnapshot>(
         stream: FirebaseFirestore.instance
             .collection('todos')
-            .where('participants', arrayContains: _currentUserEmail)
+            .orderBy('dateAdded', descending: true)
             .snapshots(),
         builder: (context, snapshot) {
           if (snapshot.hasError) {
@@ -74,18 +74,14 @@ class _TodoListViewState extends State<TodoListView> {
         },
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: _showAddTodoModal,
+        onPressed: () {
+          showModalBottomSheet(
+            context: context,
+            builder: (context) => const AddTodoModal(),
+          );
+        },
         child: const Icon(Icons.add),
       ),
-    );
-  }
-
-  void _showAddTodoModal() {
-    showModalBottomSheet(
-      context: context,
-      builder: (BuildContext context) {
-        return const AddTodoModal();
-      },
     );
   }
 }
