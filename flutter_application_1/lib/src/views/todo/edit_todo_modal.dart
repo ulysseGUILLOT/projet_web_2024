@@ -17,7 +17,7 @@ class EditTodoModal extends StatefulWidget {
 class _EditTodoModalState extends State<EditTodoModal> {
   late TextEditingController _titleController;
   late TextEditingController _textController;
-  DateTime? _selectedDate; // Make nullable
+  DateTime? _selectedDate;
   String _assignedTo = '';
   final String _currentUserEmail =
       FirebaseAuth.instance.currentUser?.email ?? '';
@@ -27,7 +27,7 @@ class _EditTodoModalState extends State<EditTodoModal> {
     super.initState();
     _titleController = TextEditingController(text: widget.todo.title);
     _textController = TextEditingController(text: widget.todo.text);
-    _selectedDate = widget.todo.dueDate; // Remove ! operator
+    _selectedDate = widget.todo.dueDate;
     _assignedTo = widget.todo.assignedTo ?? '';
   }
 
@@ -77,7 +77,6 @@ class _EditTodoModalState extends State<EditTodoModal> {
     }
   }
 
-  // Update form submission to handle null date
   void _saveTodo() {
     final Map<String, dynamic> updateData = {
       'title': _titleController.text.trim(),
@@ -85,7 +84,6 @@ class _EditTodoModalState extends State<EditTodoModal> {
       'assignedTo': _assignedTo,
     };
 
-    // Only add dueDate if it's not null
     if (_selectedDate != null) {
       updateData['dueDate'] = Timestamp.fromDate(_selectedDate!);
     }
@@ -128,15 +126,13 @@ class _EditTodoModalState extends State<EditTodoModal> {
                   return const CircularProgressIndicator();
                 }
 
-                // Create items list with "Unassigned" option
                 final List<DropdownMenuItem<String>> userItems = [
                   DropdownMenuItem(
-                    value: _currentUserEmail, // Default to current user
+                    value: _currentUserEmail,
                     child: const Text('Me'),
                   ),
                 ];
 
-                // Add other users (excluding current user)
                 for (var doc in snapshot.data!.docs) {
                   final String email = doc['email'] as String;
                   if (email != _currentUserEmail) {
@@ -147,7 +143,6 @@ class _EditTodoModalState extends State<EditTodoModal> {
                   }
                 }
 
-                // Default to current user if no assignment
                 _assignedTo =
                     _assignedTo.isEmpty ? _currentUserEmail : _assignedTo;
 
@@ -160,8 +155,7 @@ class _EditTodoModalState extends State<EditTodoModal> {
                   items: userItems,
                   onChanged: (value) {
                     setState(() {
-                      _assignedTo = value ??
-                          _currentUserEmail; // Default to current user if null
+                      _assignedTo = value ?? _currentUserEmail;
                     });
                   },
                 );
