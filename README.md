@@ -18,3 +18,10 @@ MaToDoWeb is a web application built with Angular that allows users to manage th
 - **Time Management**: Helps manage time by planning tasks and meeting deadlines.
 - **Stress Reduction**: By having a clear view of tasks to be completed, it is easier to focus and reduce stress related to forgetting important tasks.
 - **Progress Tracking**: Allows tracking progress by marking tasks as completed.
+
+## Login Credentials
+
+Use the following credentials to log in to the application:
+
+- **Email**: test@gmail.com
+- **Password**: 12456
