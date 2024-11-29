@@ -17,16 +17,15 @@ export class AddTodoFormComponent implements OnInit {
   assignedTo: string = '';
   users: any[] = [];
   minDate: string = '';
-  dateError: boolean = false; // Nouvelle propriété pour gérer l'état d'erreur
+  dateError: boolean = false;
 
   @Output() addTodo = new EventEmitter<any>();
 
-  constructor(private authService: AuthService) {
-    this.setMinDate();
-  }
+  constructor(private authService: AuthService) {}
 
   async ngOnInit() {
-    this.users = await this.authService.getUsers();
+    this.setMinDate();
+    // Fetch users or any other initialization logic
   }
 
   setMinDate() {
@@ -38,15 +37,13 @@ export class AddTodoFormComponent implements OnInit {
   }
 
   onSubmit() {
-    // Vérification de la validité de la date
     if (new Date(this.newDueDate) < new Date(this.minDate)) {
-      this.dateError = true; // Active l'erreur si la date est invalide
+      this.dateError = true;
       return;
     }
 
-    this.dateError = false; // Réinitialise l'état de l'erreur si la date est valide
+    this.dateError = false;
 
-    // Émission de l'événement si toutes les validations passent
     this.addTodo.emit({
       title: this.newTodo,
       text: this.newText,
@@ -54,7 +51,7 @@ export class AddTodoFormComponent implements OnInit {
       assignedTo: this.assignedTo,
     });
 
-    // Réinitialisation des champs après la soumission
+    // Reset form fields after submission
     this.newTodo = '';
     this.newText = '';
     this.newDueDate = '';
